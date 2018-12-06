@@ -123,8 +123,8 @@ class Presenter(Window):
 
         self.canvas_current = tk.Canvas(self.frame, height=200)
         self.canvas_next = tk.Canvas(self.frame, height=200)
-        self.canvas_timer = tk.Canvas(self.frame, height=100)
-        self.canvas_notes = tk.Canvas(self.frame, height=300)
+        self.canvas_timer = tk.Canvas(self.frame, height=200)
+        self.canvas_notes = tk.Canvas(self.frame, height=200)
 
         self.canvas_current['bg'] = 'red'
         self.canvas_next['bg'] = 'green'
@@ -132,20 +132,16 @@ class Presenter(Window):
 
         stickyAll = tk.N + tk.S + tk.E + tk.W
 
-        self.canvas_current.grid(row=0, rowspan=2, column=0, sticky=stickyAll)
-        self.canvas_next.grid(row=2, rowspan=2, column=0, sticky=stickyAll)
+        self.canvas_current.grid(row=0, column=0, sticky=stickyAll)
+        self.canvas_next.grid(row=1, column=0, sticky=stickyAll)
         self.canvas_timer.grid(row=0, column=1, sticky=stickyAll)
-        self.canvas_notes.grid(row=1, rowspan=3, column=1, sticky=stickyAll)
+        self.canvas_notes.grid(row=1, column=1, sticky=stickyAll)
 
         self.canvas_timer.bind('<Configure>', self.configure)
 
         # Configure rows and columns
-        self.frame.rowconfigure(0, minsize=100)
-
-        for i in range(4):
-            self.frame.rowconfigure(i, weight=1)
-
         for i in range(2):
+            self.frame.rowconfigure(i, weight=1, minsize=150)
             self.frame.columnconfigure(i, weight=1)
 
     def configure(self, event):
@@ -261,7 +257,7 @@ def get_ideal_size(original, desired):
         return (desired[0], floor(original[1] * (desired[0] / original[0])))
 
 
-def main():
+def main(pages=None):
     root = tk.Tk()
     app = Display(root)
     root.mainloop()

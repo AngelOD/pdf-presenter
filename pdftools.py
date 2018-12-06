@@ -1,6 +1,7 @@
 import subprocess
 import os
 import math
+from queue import Queue
 from pathlib import Path
 from PIL import Image
 
@@ -37,12 +38,39 @@ def clean_output_dir(outputPath):
         f.unlink()
 
 
+def get_pages(outputPath, spaces=4, type='png'):
+    files = os.listdir(outputPath)
+    pages = Queue()
+
+    for name in files:
+        f = outputPath / name
+
+        if not f.is_file() or f.suffix != f'.{type}' or f.stem.endswith('-2'):
+            continue
+
+        # TODO Figure out how we should enter these into the system
+        pacing = 120
+        slide = str(f)
+        notes = None
+
+        if f.stem.endswith('-1'):
+            notes = slide.replace('-1', '-2')
+
+        pages.put({
+            'slide': slide,
+            'notes': notes,
+            'pacing': pacing
+        })
+
+    return pages
+
+
 def convert_pdf_to_images(
-    inputPath, outputPath, prefix='page', spaces=4, type='png', dpi=120
+    inputPath, outputPath, spaces=4, type='png', dpi=120
 ):
     subprocess.call([
         'mutool', 'draw',
-        '-o', str(outputPath / f'{prefix}%0{spaces}d.{type}'),
+        '-o', str(outputPath / f'%0{spaces}d.{type}'),
         '-r', f'{dpi}',
         str(inputPath)
     ])
