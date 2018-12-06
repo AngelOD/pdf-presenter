@@ -103,4 +103,4 @@ venv.bak/
 # mypy
 .mypy_cache/
 /p8.pdf
-/fiddlings/mutool.exe
+mutool.exe
