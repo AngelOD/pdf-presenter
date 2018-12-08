@@ -11,8 +11,9 @@ def main():
     parser = argparse.ArgumentParser(description='Process and view a PDF file')
 
     parser.add_argument('filename', type=str, metavar='FILENAME', nargs='?', help='name of PDF file to use', default=None)
+    parser.add_argument('--dpi', type=int, metavar='DPI', nargs=1, help='The DPI to use for the pages (default=240)', default=240)
     parser.add_argument('-n', '--nosplit', action='store_true', help='Do not perform split on files')
-    parser.add_argument('-o', '--output', type=str, metavar='OUTPUT_DIR', nargs=1, help='The output directory', default='./output')
+    parser.add_argument('-o', '--output', type=str, metavar='OUTPUT_DIR', nargs=1, help='The output directory (default=\'./output\')', default='./output')
     parser.add_argument('-l', '--left', action='store_true', help='Notes are on the left instead of the right')
 
     args = parser.parse_args()
@@ -33,7 +34,7 @@ def main():
 
         print('Preparing files. Please wait...', flush=True)
         pdftools.clean_output_dir(outputPath)
-        pdftools.convert_pdf_to_images(inputPath, outputPath)
+        pdftools.convert_pdf_to_images(inputPath, outputPath, dpi=args.dpi)
 
         if not args.nosplit:
             pdftools.split_images_in_half(outputPath)
@@ -42,9 +43,9 @@ def main():
 
     pages = pdftools.get_pages(outputPath)
 
-    print(f'Found {pages.qsize()} pages. Starting viewer...', flush=True)
+    print(f'Found {len(pages)} pages. Starting viewer...', flush=True)
 
-    gui.main()
+    gui.main(pages)
 
 
 if __name__ == '__main__':

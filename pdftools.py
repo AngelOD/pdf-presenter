@@ -40,7 +40,7 @@ def clean_output_dir(outputPath):
 
 def get_pages(outputPath, spaces=4, type='png'):
     files = os.listdir(outputPath)
-    pages = Queue()
+    pages = []
 
     for name in files:
         f = outputPath / name
@@ -56,7 +56,7 @@ def get_pages(outputPath, spaces=4, type='png'):
         if f.stem.endswith('-1'):
             notes = slide.replace('-1', '-2')
 
-        pages.put({
+        pages.append({
             'slide': slide,
             'notes': notes,
             'pacing': pacing
@@ -66,14 +66,14 @@ def get_pages(outputPath, spaces=4, type='png'):
 
 
 def convert_pdf_to_images(
-    inputPath, outputPath, spaces=4, type='png', dpi=120
+    inputPath, outputPath, spaces=4, type='png', dpi=300
 ):
-    subprocess.call([
+    subprocess.run([
         'mutool', 'draw',
         '-o', str(outputPath / f'%0{spaces}d.{type}'),
         '-r', f'{dpi}',
         str(inputPath)
-    ])
+    ], stderr=subprocess.PIPE)
 
 
 def split_images_in_half(outputPath, type='png', removeAfter=True):
