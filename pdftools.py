@@ -38,14 +38,38 @@ def clean_output_dir(outputPath):
         f.unlink()
 
 
-def get_pages(outputPath, spaces=4, type='png'):
-    files = os.listdir(outputPath)
+def get_pages(outputPath, spaces=4, fileType='png', useStoredImages=False):
     pages = []
+
+    def _addPage(slide, notes, pacing):
+        nonlocal pages
+        nonlocal useStoredImages
+
+        if not useStoredImages:
+            slide = Image.open(slide)
+            slide.load()
+
+            if type(notes) == str:
+                notes = Image.open(notes)
+                notes.load()
+
+        pages.append({
+            'slide': slide,
+            'notes': notes,
+            'pacing': pacing
+        })
+
+
+    files = os.listdir(outputPath)
 
     for name in files:
         f = outputPath / name
 
-        if not f.is_file() or f.suffix != f'.{type}' or f.stem.endswith('-2'):
+        if (
+            not f.is_file()
+            or f.suffix != f'.{fileType}'
+            or f.stem.endswith('-2')
+        ):
             continue
 
         # TODO Figure out how we should enter these into the system
@@ -56,37 +80,43 @@ def get_pages(outputPath, spaces=4, type='png'):
         if f.stem.endswith('-1'):
             notes = slide.replace('-1', '-2')
 
-        pages.append({
-            'slide': slide,
-            'notes': notes,
-            'pacing': pacing
-        })
+        _addPage(slide, notes, pacing)
 
     return pages
 
 
 def convert_pdf_to_images(
-    inputPath, outputPath, spaces=4, type='png', dpi=300
+    inputPath, outputPath, spaces=4, fileType='png', dpi=300
 ):
     subprocess.run([
         'mutool', 'draw',
-        '-o', str(outputPath / f'%0{spaces}d.{type}'),
+        '-o', str(outputPath / f'%0{spaces}d.{fileType}'),
         '-r', f'{dpi}',
         str(inputPath)
     ], stderr=subprocess.PIPE)
 
 
-def split_images_in_half(outputPath, type='png', removeAfter=True):
+def prepare_images(outputPath, fileType='png', splitInHalf=True):
+    if not splitInHalf:
+        return
+
     files = os.listdir(outputPath)
 
     for name in files:
         f = outputPath / name
 
-        if not f.is_file() or f.suffix != f'.{type}':
+        if not f.is_file() or f.suffix != f'.{fileType}':
             continue
 
         try:
             im = Image.open(f)
+
+            if not splitInHalf:
+                continue
+            elif f.stem.endswith('-1') or f.stem.endswith('-2'):
+                # Images have already been split and are stored as files, so continue
+                continue
+
             x1 = 0
             y1 = 0
             w = im.width
@@ -101,7 +131,6 @@ def split_images_in_half(outputPath, type='png', removeAfter=True):
 
             box = (x1, y1, x2, y2)
             part1 = im.crop(box)
-            part1.save(outputPath.joinpath(f.stem + '-1' + f.suffix))
 
             if w > h:
                 x1 = x2 + 1
@@ -112,9 +141,9 @@ def split_images_in_half(outputPath, type='png', removeAfter=True):
 
             box = (x1, y1, x2, y2)
             part2 = im.crop(box)
-            part2.save(outputPath.joinpath(f.stem + '-2' + f.suffix))
 
-            if removeAfter:
-                f.unlink()
+            part1.save(outputPath.joinpath(f.stem + '-1' + f.suffix))
+            part2.save(outputPath.joinpath(f.stem + '-2' + f.suffix))
+            f.unlink()
         except IOError:
             print(f'Something went wrong while processing {f}')

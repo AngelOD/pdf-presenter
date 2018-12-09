@@ -7,16 +7,21 @@ import gui
 import pdftools
 
 
-def main():
+def _parseArgs():
     parser = argparse.ArgumentParser(description='Process and view a PDF file')
 
     parser.add_argument('filename', type=str, metavar='FILENAME', nargs='?', help='name of PDF file to use', default=None)
     parser.add_argument('--dpi', type=int, metavar='DPI', nargs=1, help='The DPI to use for the pages (default=240)', default=240)
-    parser.add_argument('-n', '--nosplit', action='store_true', help='Do not perform split on files')
+    parser.add_argument('--files', action='store_true', help='Use files instead of keeping images in memory')
+    parser.add_argument('--left', action='store_true', help='Notes are on the left instead of the right')
+    parser.add_argument('--nosplit', action='store_true', help='Do not perform split on files')
     parser.add_argument('-o', '--output', type=str, metavar='OUTPUT_DIR', nargs=1, help='The output directory (default=\'./output\')', default='./output')
-    parser.add_argument('-l', '--left', action='store_true', help='Notes are on the left instead of the right')
 
-    args = parser.parse_args()
+    return parser.parse_args()
+
+
+def main():
+    args = _parseArgs()
     outputPath = Path(args.output)
 
     pdftools.ensure_output_path(outputPath)
@@ -24,6 +29,7 @@ def main():
     if args.filename is not None:
         if not pdftools.locate_mutool():
             print('You need the mutool executable in the current working directory.')
+            print('Download page: https://mupdf.com/downloads/index.html')
             sys.exit(2)
 
         inputPath = Path(args.filename)
@@ -35,17 +41,21 @@ def main():
         print('Preparing files. Please wait...', flush=True)
         pdftools.clean_output_dir(outputPath)
         pdftools.convert_pdf_to_images(inputPath, outputPath, dpi=args.dpi)
-
-        if not args.nosplit:
-            pdftools.split_images_in_half(outputPath)
-
+        pdftools.prepare_images(outputPath, splitInHalf=not args.nosplit)
         print(f'Files ready!', flush=True)
+    else:
+        print('Loading images into memory...', flush=True)
+        pdftools.prepare_images(outputPath, splitInHalf=not args.nosplit)
 
-    pages = pdftools.get_pages(outputPath)
+    pages = pdftools.get_pages(outputPath, useStoredImages=args.files)
 
-    print(f'Found {len(pages)} pages. Starting viewer...', flush=True)
+    print(f'Found {len(pages)} pages. ', flush=True, end='')
 
-    gui.main(pages)
+    if len(pages) > 0:
+        print('Starting viewer...', flush=True)
+        gui.main(pages)
+    else:
+        print('Nothing to display!')
 
 
 if __name__ == '__main__':

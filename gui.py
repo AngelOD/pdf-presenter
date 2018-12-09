@@ -30,23 +30,39 @@ class Window:
         if self.is_fullscreen:
             self.toggle_fullscreen(event)
 
-    def get_image_element(self, type='current'):
+    def get_image_element(self, imageType='current'):
         global pageRegistry
 
-        if type == 'current':
-            return Image.open(pageRegistry[self.slideNum]['slide'])
-        elif type == 'next':
-            if self.slideNum + 1 >= len(pageRegistry):
-                return None
+        image = None
 
-            return Image.open(pageRegistry[self.slideNum + 1]['slide'])
-        elif type == 'notes':
-            if pageRegistry[self.slideNum]['notes'] is None:
-                return None
+        if imageType== 'current':
+            slide = pageRegistry[self.slideNum]['slide']
 
-            return Image.open(pageRegistry[self.slideNum]['notes'])
+            if type(slide) == str:
+                image = Image.open(slide)
+            else:
+                image = slide
+        elif imageType== 'next':
+            if self.slideNum + 1 < len(pageRegistry):
+                slide = pageRegistry[self.slideNum + 1]['slide']
 
-        return None
+                if type(slide) == str:
+                    image = Image.open(slide)
+                else:
+                    image = slide
+        elif imageType== 'notes':
+            if pageRegistry[self.slideNum]['notes'] is not None:
+                notes = pageRegistry[self.slideNum]['notes']
+
+                if type(notes) == str:
+                    image = Image.open(notes)
+                else:
+                    image = notes
+
+        if image is not None:
+            image.load()
+
+        return image
 
     def toggle_fullscreen(self, event):
         self.is_fullscreen = not self.is_fullscreen
@@ -64,7 +80,7 @@ class Window:
         self.on_update_slide(self.slideNum, self)
 
     def next_slide(self, event):
-        self.slideNum = min(self.slideNum + 1, len(pageRegistry))
+        self.slideNum = min(self.slideNum + 1, len(pageRegistry) - 1)
         self.on_update_slide(self.slideNum, self)
 
     def set_slide(self, slideNum, fromElem=None):
