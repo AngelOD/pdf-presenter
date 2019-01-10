@@ -1,2 +1,2 @@
-# pdf-viewer
-An attempt at making a PDF viewer.
+# pdf-presenter
+An attempt at making a PDF presenter in Python.
