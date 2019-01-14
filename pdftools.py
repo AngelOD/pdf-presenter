@@ -22,11 +22,17 @@ def locate_mutool():
 
 
 def ensure_output_path(outputPath):
+    """
+    TODO: Write documentation
+    """
     if not outputPath.exists():
         outputPath.mkdir(parents=True)
 
 
 def clean_output_dir(outputPath):
+    """
+    TODO: Write documentation
+    """
     files = os.listdir(outputPath)
 
     for name in files:
@@ -39,6 +45,9 @@ def clean_output_dir(outputPath):
 
 
 def get_pages(outputPath, spaces=4, fileType='png', useStoredImages=False):
+    """
+    TODO: Write documentation
+    """
     pages = []
 
     def _addPage(slide, notes, pacing):
@@ -59,8 +68,8 @@ def get_pages(outputPath, spaces=4, fileType='png', useStoredImages=False):
             'pacing': pacing
         })
 
-
     files = os.listdir(outputPath)
+    files.sort()
 
     for name in files:
         f = outputPath / name
@@ -72,7 +81,6 @@ def get_pages(outputPath, spaces=4, fileType='png', useStoredImages=False):
         ):
             continue
 
-        # TODO Figure out how we should enter these into the system
         pacing = 120
         slide = str(f)
         notes = None
@@ -88,6 +96,9 @@ def get_pages(outputPath, spaces=4, fileType='png', useStoredImages=False):
 def convert_pdf_to_images(
     inputPath, outputPath, spaces=4, fileType='png', dpi=300
 ):
+    """
+    TODO: Write documentation
+    """
     subprocess.run([
         'mutool', 'draw',
         '-o', str(outputPath / f'%0{spaces}d.{fileType}'),
@@ -97,6 +108,9 @@ def convert_pdf_to_images(
 
 
 def prepare_images(outputPath, fileType='png', splitInHalf=True):
+    """
+    TODO: Write documentation
+    """
     if not splitInHalf:
         return
 
@@ -114,7 +128,7 @@ def prepare_images(outputPath, fileType='png', splitInHalf=True):
             if not splitInHalf:
                 continue
             elif f.stem.endswith('-1') or f.stem.endswith('-2'):
-                # Images have already been split and are stored as files, so continue
+                # Images have already been split and are stored as files
                 continue
 
             x1 = 0
