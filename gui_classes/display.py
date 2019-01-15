@@ -18,7 +18,7 @@ class Display(Window):
         """
 
         self.master.bind('s', self.open_presenter_view)
-        self.master.bind('<Key>', self.show_key_info)
+        #self.master.bind('<Key>', self.show_key_info)
 
         self.canvas = tk.Canvas(self.frame, width=300, height=300)
         self.canvas.pack(fill=tk.BOTH, expand=True)

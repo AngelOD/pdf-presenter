@@ -22,6 +22,7 @@ class Window:
 
         master.bind('<Escape>', self.exit_fullscreen)
         master.bind('b', self.toggle_fullscreen)
+        master.bind('<Control-w>', self.handle_destroy)
         master.bind('<Destroy>', self.handle_destroy)
         master.bind('<Next>', self.next_slide)
         master.bind('<Prior>', self.prev_slide)
