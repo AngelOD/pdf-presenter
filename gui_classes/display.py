@@ -2,7 +2,8 @@ import tkinter as tk
 from math import floor
 from PIL import ImageTk, Image
 from tkinter import TclError
-from .window import Window, get_ideal_size
+from utils import get_ideal_size
+from .window import Window
 from .presenter import Presenter
 
 
@@ -94,7 +95,7 @@ class Display(Window):
             try:
                 self.app.set_slide(slideNum, self)
             except TclError:
-                print('Caught an error')
+                pass
 
         self.imgOrig = self.get_image_element('current')
         self.set_image_element()

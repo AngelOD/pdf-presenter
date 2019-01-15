@@ -95,17 +95,6 @@ class Window:
 
         return self.get_pacing_begin() + self.get_pacing()
 
-    def get_time_parts(self, diff):
-        """
-        TODO: Write documentation
-        """
-
-        m = floor((diff // 60) % 60)
-        h = floor(diff // 3600)
-        s = floor(diff % 60)
-
-        return (h, m, s)
-
     def toggle_fullscreen(self, event):
         """
         TODO: Write documentation
@@ -175,13 +164,3 @@ class Window:
         """
 
         pass
-
-
-def get_ideal_size(original, desired):
-    ratioOrig = original[0] / original[1]
-    ratioDes = desired[0] / desired[1]
-
-    if ratioDes > ratioOrig:
-        return (floor(original[0] * (desired[1] / original[1])), desired[1])
-    else:
-        return (desired[0], floor(original[1] * (desired[0] / original[0])))

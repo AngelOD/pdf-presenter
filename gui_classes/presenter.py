@@ -4,7 +4,8 @@ from math import floor
 from threading import Event, Thread
 from tkinter import font as tkfont
 from PIL import ImageTk, Image
-from .window import Window, get_ideal_size
+from utils import format_time, get_ideal_size, get_time_parts
+from .window import Window
 
 
 class Presenter(Window):
@@ -222,16 +223,13 @@ class Presenter(Window):
 
         # Define the elapsed timer
         tdiff = floor(time.time() - self.startTime)
-        h, m, s = self.get_time_parts(tdiff)
-
-        if h > 0:
-            prefix = f'{str(h).zfill(2)}:'
-
-        elapsedPrint = f'{prefix}{str(m).zfill(2)}:{str(s).zfill(2)}'
+        tparts = get_time_parts(tdiff)
+        elapsedPrint = format_time(tparts)
 
         # Define the pacing timer including the colour
         pdiff = floor(self.get_pacing_end() - tdiff)
-        h, m, s = self.get_time_parts(abs(pdiff))
+        tparts = get_time_parts(abs(pdiff))
+
         if pdiff >= 0:
             prefix = ''
 
@@ -243,10 +241,7 @@ class Presenter(Window):
             prefix = '-'
             pfill = 'red'
 
-        if h > 0:
-            prefix = f'{prefix}{str(h).zfill(2)}:'
-
-        pacingPrint = f'{prefix}{str(m).zfill(2)}:{str(s).zfill(2)}'
+        pacingPrint = prefix + format_time(tparts)
 
         # Figure out what needs updating and update accordingly
         updateCurrent = clockPrint != self.lastCurrent
@@ -275,7 +270,7 @@ class Presenter(Window):
 
             self.elapsed_timer = self.canvas_timer.create_text(
                 10, 10,
-                fill='blue',
+                fill='black',
                 anchor=tk.NW,
                 font=self.fontElapsed,
                 text=elapsedPrint
@@ -321,6 +316,8 @@ class Presenter(Window):
             self.orgImages['current'],
             'current'
         )
+
+        self.update_time()
 
 
 class TimerThread(Thread):

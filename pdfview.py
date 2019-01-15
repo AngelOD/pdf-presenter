@@ -7,6 +7,7 @@ from pathlib import Path
 import filetools
 import gui
 import pdftools
+from utils import format_time, get_time_parts
 
 
 def _parseArgs():
@@ -144,7 +145,7 @@ def main():
             compoundingPacing += page['pacing']
 
         # TODO: Insert properly formatted length here
-        print(f'Presentation scheduled to take {compoundingPacing} seconds')
+        print(f'Presentation scheduled to take {format_time(get_time_parts(compoundingPacing), with_letters=True)}')
 
         print('Starting viewer...', flush=True)
         gui.main(pages)
