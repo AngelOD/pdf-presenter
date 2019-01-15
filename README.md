@@ -7,7 +7,7 @@ without having to switch resolutions. I also thought it'd be a fun little projec
 Key | Applies To | Functionality
 --- | ---------- | -------------
 b | Both | Toggle fullscreen
-<Control-c> | Both | Exit application
+&lt;Control-c&gt; | Both | Exit application
 <Escape> | Both | Exit fullscreen
 <PgDown> | Both | Next slide
 <PgUp> | Both | Previous slide
