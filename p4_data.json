@@ -1,0 +1,16 @@
+{
+  "pacings": [
+    [0, 20],
+    [1, 10, 90],
+    [35, 50, 60]
+  ],
+  "notes": [
+    [0, "First note", "Second note", "Third note!"],
+    [10, [
+      "This is a note",
+      "So is this!",
+      "Wooooo!"
+    ]],
+    [12, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus id efficitur metus. Praesent id egestas nisi. Duis hendrerit mattis libero, ac posuere lacus consequat lobortis. Suspendisse potenti. Pellentesque tincidunt varius pulvinar. In condimentum dolor ut eros dignissim, vitae luctus ipsum scelerisque. Nulla viverra, risus et dapibus elementum, arcu risus vehicula leo, ullamcorper interdum leo purus id sem. Proin blandit sodales pulvinar. Aenean sagittis risus a lacus imperdiet, at sagittis quam fringilla. Vestibulum porta ultrices elit, ac mattis neque rhoncus a. Curabitur augue neque, porttitor vel commodo at, mattis aliquam augue. Donec dui nulla, ornare non velit a, sodales tempus nulla. Pellentesque eleifend rhoncus libero ac porttitor."]
+  ]
+}
