@@ -87,6 +87,10 @@ def main():
     args = _parseArgs()
     outputPath = Path(args.output)
 
+    # Hack to fix parsed arguments
+    if isinstance(args.dpi, list):
+        args.dpi = args.dpi[0]
+
     pdftools.ensure_output_path(outputPath)
 
     if args.filename is not None:
