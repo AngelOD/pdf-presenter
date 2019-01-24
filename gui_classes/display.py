@@ -21,6 +21,8 @@ class Display(Window):
         #self.master.bind('<Key>', self.show_key_info)
 
         self.canvas = tk.Canvas(self.frame, width=300, height=300)
+
+        self.canvas['bg'] = 'white'
         self.canvas.pack(fill=tk.BOTH, expand=True)
         self.imgOrig = self.get_image_element('current')
         self.canvas.bind('<Configure>', self.configure)
@@ -84,7 +86,10 @@ class Display(Window):
 
         self.img = ImageTk.PhotoImage(
             self.imgOrig.copy().resize(size, resample=Image.HAMMING))
-        self.canvas.create_image(0, 0, image=self.img, anchor=tk.NW)
+
+        x = floor((width / 2) - (size[0] / 2))
+        y = floor((height / 2) - (size[1] / 2))
+        self.canvas.create_image(x, y, image=self.img, anchor=tk.NW)
 
     def on_update_slide(self, slideNum, fromElem=None):
         """
