@@ -85,11 +85,15 @@ def main():
     TODO: Write documentation
     """
     args = _parseArgs()
-    outputPath = Path(args.output)
 
     # Hack to fix parsed arguments
     if isinstance(args.dpi, list):
         args.dpi = args.dpi[0]
+
+    if isinstance(args.output, list):
+        args.output = args.output[0]
+
+    outputPath = Path(args.output)
 
     pdftools.ensure_output_path(outputPath)
 
